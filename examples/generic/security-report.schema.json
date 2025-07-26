@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Security Report Schema",
+  "description": "Schema for security analysis reports from tools like zizmor and capslock",
+  "type": "object",
+  "properties": {
+    "metadata": {
+      "type": "object",
+      "title": "Report Metadata",
+      "properties": {
+        "tool": {
+          "type": "string",
+          "title": "Tool Name",
+          "description": "Name of the security analysis tool",
+          "enum": ["zizmor", "capslock", "semgrep", "bandit"]
+        },
+        "version": {
+          "type": "string",
+          "title": "Tool Version",
+          "description": "Version of the analysis tool"
+        },
+        "scan_id": {
+          "type": "string",
+          "title": "Scan ID",
+          "format": "uuid",
+          "description": "Unique identifier for this scan"
+        },
+        "timestamp": {
+          "type": "string",
+          "title": "Scan Timestamp",
+          "format": "date-time",
+          "description": "When the scan was performed",
+          "readOnly": true
+        },
+        "duration_ms": {
+          "type": "integer",
+          "title": "Duration",
+          "description": "Scan duration in milliseconds"
+        }
+      },
+      "required": ["tool", "version", "timestamp"]
+    },
+    "summary": {
+      "type": "object",
+      "title": "Results Summary",
+      "properties": {
+        "total_issues": {
+          "type": "integer",
+          "title": "Total Issues",
+          "description": "Total number of security issues found"
+        },
+        "by_severity": {
+          "type": "object",
+          "title": "Issues by Severity",
+          "properties": {
+            "critical": {
+              "type": "integer",
+              "title": "Critical Issues"
+            },
+            "high": {
+              "type": "integer", 
+              "title": "High Severity Issues"
+            },
+            "medium": {
+              "type": "integer",
+              "title": "Medium Severity Issues"
+            },
+            "low": {
+              "type": "integer",
+              "title": "Low Severity Issues"
+            },
+            "info": {
+              "type": "integer",
+              "title": "Informational Issues"
+            }
+          }
+        }
+      }
+    },
+    "issues": {
+      "type": "array",
+      "title": "Security Issues",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Issue ID",
+            "description": "Unique identifier for the issue"
+          },
+          "severity": {
+            "type": "string",
+            "title": "Severity Level",
+            "enum": ["critical", "high", "medium", "low", "info"]
+          },
+          "category": {
+            "type": "string",
+            "title": "Issue Category",
+            "description": "Type of security issue",
+            "enum": ["injection", "authentication", "authorization", "crypto", "disclosure", "dos", "misc"]
+          },
+          "title": {
+            "type": "string",
+            "title": "Issue Title",
+            "description": "Brief description of the issue"
+          },
+          "description": {
+            "type": "string",
+            "title": "Detailed Description",
+            "description": "Full explanation of the security issue"
+          },
+          "location": {
+            "type": "object",
+            "title": "Issue Location",
+            "properties": {
+              "file": {
+                "type": "string",
+                "title": "File Path",
+                "description": "Path to the file containing the issue"
+              },
+              "line": {
+                "type": "integer",
+                "title": "Line Number",
+                "description": "Line number where issue occurs"
+              },
+              "column": {
+                "type": "integer",
+                "title": "Column Number",
+                "description": "Column number where issue occurs"
+              }
+            }
+          },
+          "confidence": {
+            "type": "string",
+            "title": "Confidence Level",
+            "enum": ["high", "medium", "low"]
+          },
+          "fix_available": {
+            "type": "boolean",
+            "title": "Fix Available",
+            "description": "Whether an automated fix is available"
+          }
+        },
+        "required": ["id", "severity", "title", "location"]
+      }
+    }
+  },
+  "required": ["metadata", "summary", "issues"]
+}

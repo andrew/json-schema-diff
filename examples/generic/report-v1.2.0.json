@@ -1,0 +1,63 @@
+{
+  "metadata": {
+    "tool": "zizmor",
+    "version": "1.2.0",
+    "scan_id": "123e4567-e89b-12d3-a456-426614174000",
+    "timestamp": "2023-12-01T10:00:00Z",
+    "duration_ms": 1500
+  },
+  "summary": {
+    "total_issues": 3,
+    "by_severity": {
+      "critical": 1,
+      "high": 1,
+      "medium": 1,
+      "low": 0,
+      "info": 0
+    }
+  },
+  "issues": [
+    {
+      "id": "ZIZ001",
+      "severity": "critical",
+      "category": "injection",
+      "title": "Potential command injection in workflow",
+      "description": "User input is passed directly to shell command without sanitization",
+      "location": {
+        "file": ".github/workflows/ci.yml",
+        "line": 42,
+        "column": 12
+      },
+      "confidence": "high",
+      "fix_available": true
+    },
+    {
+      "id": "ZIZ002", 
+      "severity": "high",
+      "category": "authentication",
+      "title": "Secrets exposed in logs",
+      "description": "API keys may be leaked through debug output",
+      "location": {
+        "file": ".github/workflows/deploy.yml",
+        "line": 18,
+        "column": 8
+      },
+      "confidence": "medium",
+      "fix_available": false
+    },
+    {
+      "id": "ZIZ003",
+      "severity": "medium", 
+      "category": "misc",
+      "title": "Outdated action version",
+      "description": "Using deprecated version of actions/checkout",
+      "location": {
+        "file": ".github/workflows/test.yml",
+        "line": 12,
+        "column": 15
+      },
+      "confidence": "high",
+      "fix_available": true
+    }
+  ]
+}

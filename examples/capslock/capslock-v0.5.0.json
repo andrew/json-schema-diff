@@ -1,0 +1,78 @@
+{
+  "capability_info": [
+    {
+      "package_name": "github.com/example/myapp",
+      "capability": "CAPABILITY_FILES",
+      "dep_path": "direct",
+      "path": [
+        {
+          "name": "ReadConfig",
+          "site": {
+            "filename": "config.go",
+            "line": 42,
+            "column": 8
+          },
+          "package": "github.com/example/myapp/config"
+        },
+        {
+          "name": "os.ReadFile",
+          "site": {
+            "filename": "config.go",
+            "line": 45,
+            "column": 12
+          },
+          "package": "os"
+        }
+      ],
+      "package_dir": "/home/user/myapp",
+      "capability_type": "CAPABILITY_TYPE_DIRECT"
+    },
+    {
+      "package_name": "github.com/example/myapp/server",
+      "capability": "CAPABILITY_NETWORK",
+      "dep_path": "direct",
+      "path": [
+        {
+          "name": "StartServer",
+          "site": {
+            "filename": "server.go",
+            "line": 25,
+            "column": 5
+          },
+          "package": "github.com/example/myapp/server"
+        },
+        {
+          "name": "http.ListenAndServe",
+          "site": {
+            "filename": "server.go",
+            "line": 30,
+            "column": 8
+          },
+          "package": "net/http"
+        }
+      ],
+      "package_dir": "/home/user/myapp/server",
+      "capability_type": "CAPABILITY_TYPE_DIRECT"
+    }
+  ],
+  "module_info": [
+    {
+      "path": "github.com/example/myapp",
+      "version": "v1.0.0"
+    },
+    {
+      "path": "github.com/gorilla/mux",
+      "version": "v1.8.0"
+    }
+  ],
+  "package_info": [
+    {
+      "path": "github.com/example/myapp",
+      "ignored_files": []
+    },
+    {
+      "path": "github.com/example/myapp/server",
+      "ignored_files": ["server_test.go"]
+    }
+  ]
+}

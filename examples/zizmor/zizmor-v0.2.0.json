@@ -1,0 +1,160 @@
+[
+  {
+    "ident": "template-injection",
+    "desc": "Template injection in workflow",
+    "url": "https://docs.zizmor.sh/audits/template-injection/",
+    "determinations": {
+      "confidence": "High",
+      "severity": "High", 
+      "persona": "Regular"
+    },
+    "locations": [
+      {
+        "symbolic": {
+          "key": {
+            "Local": {
+              "prefix": null,
+              "given_path": ".github/workflows/ci.yml"
+            }
+          },
+          "annotation": "workflow step uses uncontrolled template expression",
+          "route": {
+            "route": [
+              {"Key": "jobs"},
+              {"Key": "test"},
+              {"Key": "steps"},
+              {"Index": 2},
+              {"Key": "run"}
+            ]
+          },
+          "feature_kind": "Normal",
+          "kind": "Primary"
+        },
+        "concrete": {
+          "location": {
+            "start_point": {
+              "row": 42,
+              "column": 12
+            },
+            "end_point": {
+              "row": 42,
+              "column": 45
+            },
+            "offset_span": {
+              "start": 1250,
+              "end": 1283
+            }
+          },
+          "feature": "echo \"Hello ${{ github.event.issue.title }}\"",
+          "comments": []
+        }
+      }
+    ],
+    "ignored": false
+  },
+  {
+    "ident": "dangerous-actions",
+    "desc": "Use of dangerous or deprecated action",
+    "url": "https://docs.zizmor.sh/audits/dangerous-actions/",
+    "determinations": {
+      "confidence": "High",
+      "severity": "High",
+      "persona": "Regular"
+    },
+    "locations": [
+      {
+        "symbolic": {
+          "key": {
+            "Local": {
+              "prefix": null,
+              "given_path": ".github/workflows/deploy.yml"
+            }
+          },
+          "annotation": "potentially dangerous action with write permissions",
+          "route": {
+            "route": [
+              {"Key": "jobs"},
+              {"Key": "deploy"},
+              {"Key": "steps"},
+              {"Index": 0},
+              {"Key": "uses"}
+            ]
+          },
+          "feature_kind": "Normal",
+          "kind": "Primary"
+        },
+        "concrete": {
+          "location": {
+            "start_point": {
+              "row": 25,
+              "column": 8
+            },
+            "end_point": {
+              "row": 25,
+              "column": 35
+            },
+            "offset_span": {
+              "start": 780,
+              "end": 807
+            }
+          },
+          "feature": "uses: suspicious/action@v1",
+          "comments": []
+        }
+      }
+    ],
+    "ignored": false
+  },
+  {
+    "ident": "hardcoded-credentials",
+    "desc": "Hardcoded credentials detected",
+    "url": "https://docs.zizmor.sh/audits/hardcoded-credentials/",
+    "determinations": {
+      "confidence": "High",
+      "severity": "High",
+      "persona": "Regular"
+    },
+    "locations": [
+      {
+        "symbolic": {
+          "key": {
+            "Local": {
+              "prefix": null,
+              "given_path": ".github/workflows/release.yml"
+            }
+          },
+          "annotation": "hardcoded API key in environment variable",
+          "route": {
+            "route": [
+              {"Key": "jobs"},
+              {"Key": "publish"},
+              {"Key": "env"},
+              {"Key": "API_KEY"}
+            ]
+          },
+          "feature_kind": "Normal",
+          "kind": "Primary"
+        },
+        "concrete": {
+          "location": {
+            "start_point": {
+              "row": 18,
+              "column": 4
+            },
+            "end_point": {
+              "row": 18,
+              "column": 35
+            },
+            "offset_span": {
+              "start": 560,
+              "end": 591
+            }
+          },
+          "feature": "API_KEY: sk-1234567890abcdef",
+          "comments": []
+        }
+      }
+    ],
+    "ignored": false
+  }
+]

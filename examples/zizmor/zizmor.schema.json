@@ -1,0 +1,300 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://docs.zizmor.sh/schemas/output-v1.json",
+  "title": "Zizmor JSON Output Schema (v1)",
+  "description": "Schema for zizmor's v1 JSON output format - an array of security findings",
+  "type": "array",
+  "items": {
+    "$ref": "#/$defs/Finding"
+  },
+  "$defs": {
+    "Finding": {
+      "type": "object",
+      "description": "A security finding identified by zizmor",
+      "required": ["ident", "desc", "url", "determinations", "locations", "ignored"],
+      "properties": {
+        "ident": {
+          "type": "string",
+          "description": "The audit ID for this finding (e.g., 'template-injection')"
+        },
+        "desc": {
+          "type": "string",
+          "description": "A short description of the finding"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URL linking to the documentation for this finding's audit"
+        },
+        "determinations": {
+          "$ref": "#/$defs/Determinations"
+        },
+        "locations": {
+          "type": "array",
+          "description": "Array of locations where this finding occurs",
+          "items": {
+            "$ref": "#/$defs/Location"
+          },
+          "minItems": 1
+        },
+        "ignored": {
+          "type": "boolean",
+          "description": "Whether this finding is ignored via inline comments or configuration"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Determinations": {
+      "type": "object",
+      "description": "Classifications for the finding's confidence, severity, and target persona",
+      "required": ["confidence", "severity", "persona"],
+      "properties": {
+        "confidence": {
+          "$ref": "#/$defs/Confidence"
+        },
+        "severity": {
+          "$ref": "#/$defs/Severity"
+        },
+        "persona": {
+          "$ref": "#/$defs/Persona"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Confidence": {
+      "type": "string",
+      "enum": ["Unknown", "Low", "Medium", "High"],
+      "description": "Confidence level of the finding"
+    },
+    "Severity": {
+      "type": "string", 
+      "enum": ["Unknown", "Informational", "Low", "Medium", "High"],
+      "description": "Severity level of the finding"
+    },
+    "Persona": {
+      "type": "string",
+      "enum": ["Auditor", "Pedantic", "Regular"],
+      "description": "Target persona for the finding (affects false positive tolerance)"
+    },
+    "Location": {
+      "type": "object",
+      "description": "A location within a GitHub Actions workflow with symbolic and concrete components",
+      "required": ["symbolic", "concrete"],
+      "properties": {
+        "symbolic": {
+          "$ref": "#/$defs/SymbolicLocation"
+        },
+        "concrete": {
+          "$ref": "#/$defs/Feature"
+        }
+      },
+      "additionalProperties": false
+    },
+    "SymbolicLocation": {
+      "type": "object",
+      "description": "Symbolic representation of a location in the workflow",
+      "required": ["key", "annotation", "route", "feature_kind", "kind"],
+      "properties": {
+        "key": {
+          "$ref": "#/$defs/InputKey"
+        },
+        "annotation": {
+          "type": "string",
+          "description": "Human-readable annotation for this location"
+        },
+        "route": {
+          "$ref": "#/$defs/Route"
+        },
+        "feature_kind": {
+          "$ref": "#/$defs/SymbolicFeature"
+        },
+        "kind": {
+          "$ref": "#/$defs/LocationKind"
+        }
+      },
+      "additionalProperties": false
+    },
+    "InputKey": {
+      "type": "object",
+      "description": "Identifier for the input file",
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["Local"],
+          "properties": {
+            "Local": {
+              "type": "object",
+              "required": ["prefix", "given_path"],
+              "properties": {
+                "prefix": {
+                  "type": ["string", "null"],
+                  "description": "Optional prefix for the path"
+                },
+                "given_path": {
+                  "type": "string",
+                  "description": "The file path"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "Route": {
+      "type": "object",
+      "description": "Path through the YAML structure to reach the location",
+      "required": ["route"],
+      "properties": {
+        "route": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/RouteComponent"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "RouteComponent": {
+      "oneOf": [
+        {
+          "type": "object",
+          "required": ["Key"],
+          "properties": {
+            "Key": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        {
+          "type": "object",
+          "required": ["Index"],
+          "properties": {
+            "Index": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "SymbolicFeature": {
+      "oneOf": [
+        {
+          "type": "string",
+          "enum": ["Normal", "KeyOnly"],
+          "description": "Normal feature (whole YAML feature) or KeyOnly (key without value)"
+        },
+        {
+          "type": "object",
+          "required": ["Subfeature"],
+          "properties": {
+            "Subfeature": {
+              "type": "object",
+              "required": ["after", "fragment"],
+              "properties": {
+                "after": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "description": "Byte offset within the parent feature"
+                },
+                "fragment": {
+                  "type": "object",
+                  "required": ["Raw"],
+                  "properties": {
+                    "Raw": {
+                      "type": "string",
+                      "description": "The raw text fragment"
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    },
+    "LocationKind": {
+      "type": "string",
+      "enum": ["Primary", "Related", "Hidden"],
+      "description": "Type of location: Primary (main issue), Related (supporting), or Hidden (not displayed)"
+    },
+    "Feature": {
+      "type": "object",
+      "description": "Concrete extracted feature with location and content",
+      "required": ["location", "feature", "comments"],
+      "properties": {
+        "location": {
+          "$ref": "#/$defs/ConcreteLocation"
+        },
+        "feature": {
+          "type": "string",
+          "description": "The extracted textual content of the feature"
+        },
+        "comments": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Any comments within the feature's line span"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ConcreteLocation": {
+      "type": "object",
+      "description": "Concrete location with line/column and byte offset information",
+      "required": ["start_point", "end_point", "offset_span"],
+      "properties": {
+        "start_point": {
+          "$ref": "#/$defs/Point"
+        },
+        "end_point": {
+          "$ref": "#/$defs/Point"
+        },
+        "offset_span": {
+          "type": "object",
+          "required": ["start", "end"],
+          "properties": {
+            "start": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Starting byte offset"
+            },
+            "end": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "Ending byte offset"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    "Point": {
+      "type": "object",
+      "description": "A (row, column) point within a file",
+      "required": ["row", "column"],
+      "properties": {
+        "row": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-indexed row number"
+        },
+        "column": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Zero-indexed column number"
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

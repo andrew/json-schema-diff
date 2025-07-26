@@ -1,0 +1,169 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/google/capslock/schema/output.json",
+  "title": "Capslock CLI JSON Output Schema",
+  "description": "JSON schema for the output of the capslock CLI tool when using -output=json",
+  "type": "object",
+  "properties": {
+    "capability_info": {
+      "type": "array",
+      "description": "List of capability information for analyzed packages",
+      "items": {
+        "$ref": "#/definitions/CapabilityInfo"
+      }
+    },
+    "module_info": {
+      "type": "array",
+      "description": "Information about Go modules analyzed",
+      "items": {
+        "$ref": "#/definitions/ModuleInfo"
+      }
+    },
+    "package_info": {
+      "type": "array",
+      "description": "Information about Go packages analyzed",
+      "items": {
+        "$ref": "#/definitions/PackageInfo"
+      }
+    }
+  },
+  "required": [],
+  "additionalProperties": false,
+  "definitions": {
+    "CapabilityInfo": {
+      "type": "object",
+      "description": "Information about a specific capability found in the code",
+      "properties": {
+        "package_name": {
+          "type": "string",
+          "description": "The name of the package where the capability is found"
+        },
+        "capability": {
+          "$ref": "#/definitions/Capability",
+          "description": "The type of capability detected"
+        },
+        "dep_path": {
+          "type": "string",
+          "description": "The dependency path to where the capability is incurred"
+        },
+        "path": {
+          "type": "array",
+          "description": "The call path showing how the capability is reached, with each element being a function or method",
+          "items": {
+            "$ref": "#/definitions/Function"
+          }
+        },
+        "package_dir": {
+          "type": "string",
+          "description": "The location/directory of the package"
+        },
+        "capability_type": {
+          "$ref": "#/definitions/CapabilityType",
+          "description": "Classification of how the capability was incurred (direct or transitive)"
+        }
+      },
+      "additionalProperties": false
+    },
+    "Function": {
+      "type": "object",
+      "description": "Information about a function in a call path",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "The name of the function"
+        },
+        "site": {
+          "$ref": "#/definitions/FunctionSite",
+          "description": "Location information for the function call"
+        },
+        "package": {
+          "type": "string",
+          "description": "The package containing this function"
+        }
+      },
+      "additionalProperties": false
+    },
+    "FunctionSite": {
+      "type": "object",
+      "description": "Source location information for a function",
+      "properties": {
+        "filename": {
+          "type": "string",
+          "description": "The source file containing the function"
+        },
+        "line": {
+          "type": "integer",
+          "description": "The line number in the source file"
+        },
+        "column": {
+          "type": "integer",
+          "description": "The column number in the source file"
+        }
+      },
+      "additionalProperties": false
+    },
+    "ModuleInfo": {
+      "type": "object",
+      "description": "Information about a Go module",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The module path/import path"
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the module"
+        }
+      },
+      "additionalProperties": false
+    },
+    "PackageInfo": {
+      "type": "object",
+      "description": "Information about a Go package",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "The package import path"
+        },
+        "ignored_files": {
+          "type": "array",
+          "description": "List of source files in the package directory that were ignored due to build configuration and build tags",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "Capability": {
+      "type": "string",
+      "description": "Types of capabilities that can be detected by capslock",
+      "enum": [
+        "CAPABILITY_UNSPECIFIED",
+        "CAPABILITY_SAFE",
+        "CAPABILITY_FILES",
+        "CAPABILITY_NETWORK",
+        "CAPABILITY_RUNTIME",
+        "CAPABILITY_READ_SYSTEM_STATE",
+        "CAPABILITY_MODIFY_SYSTEM_STATE",
+        "CAPABILITY_OPERATING_SYSTEM",
+        "CAPABILITY_SYSTEM_CALLS",
+        "CAPABILITY_ARBITRARY_EXECUTION",
+        "CAPABILITY_CGO",
+        "CAPABILITY_UNANALYZED",
+        "CAPABILITY_UNSAFE_POINTER",
+        "CAPABILITY_REFLECT",
+        "CAPABILITY_EXEC"
+      ]
+    },
+    "CapabilityType": {
+      "type": "string",
+      "description": "Classification of how a capability was incurred",
+      "enum": [
+        "CAPABILITY_TYPE_UNSPECIFIED",
+        "CAPABILITY_TYPE_DIRECT",
+        "CAPABILITY_TYPE_TRANSITIVE"
+      ]
+    }
+  }
+}
