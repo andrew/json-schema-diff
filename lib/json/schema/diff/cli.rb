@@ -3,11 +3,24 @@
 module Json
   module Schema
     module Diff
+      # Command-line interface for json-schema-diff
+      #
+      # Provides a comprehensive CLI for comparing JSON files using JSON Schema guidance.
+      # Supports multiple output formats, validation options, and field filtering.
       class CLI
+        # Entry point for the CLI application
+        #
+        # @param args [Array<String>] Command-line arguments
+        # @return [void]
         def self.start(args)
           new.run(args)
         end
 
+        # Runs the CLI with the provided arguments
+        #
+        # @param args [Array<String>] Command-line arguments including schema, old JSON, and new JSON files
+        # @return [void]
+        # @raise [SystemExit] Exits with status 1 on errors
         def run(args)
           options = parse_options(args)
           
@@ -50,6 +63,11 @@ module Json
 
         private
 
+        # Parses command-line options and arguments
+        #
+        # @param args [Array<String>] Command-line arguments to parse
+        # @return [Hash] Parsed options hash
+        # @raise [SystemExit] Exits on invalid options or help/version requests
         def parse_options(args)
           options = {
             format: "pretty",

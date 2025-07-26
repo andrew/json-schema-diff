@@ -4,6 +4,7 @@ A Ruby gem that performs semantic diffs between JSON files, using JSON Schema to
 
 [![Ruby](https://img.shields.io/badge/ruby-%3E%3D%203.2-red.svg)](https://www.ruby-lang.org/)
 [![Gem Version](https://badge.fury.io/rb/json-schema-diff.svg)](https://rubygems.org/gems/json-schema-diff)
+[![Documentation](https://img.shields.io/badge/docs-rubydoc.info-blue.svg)](https://rubydoc.info/gems/json-schema-diff)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Perfect for comparing structured CLI output from security tools like zizmor and capslock across versions to highlight when security issues have been introduced or resolved.

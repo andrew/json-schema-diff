@@ -3,12 +3,25 @@
 module Json
   module Schema
     module Diff
+      # Compares two JSON objects using schema guidance to detect changes
+      #
+      # This class performs recursive comparison of JSON structures, using schema
+      # information to provide context and handle special cases like read-only fields.
       class Comparer
+        # Initialize a new Comparer
+        #
+        # @param schema_parser [SchemaParser] Parser for the JSON Schema
+        # @param ignore_fields [Array<String>] List of field paths to ignore during comparison
         def initialize(schema_parser, ignore_fields = [])
           @schema_parser = schema_parser
           @ignore_fields = ignore_fields.map(&:to_s)
         end
 
+        # Compares two JSON objects and returns a list of changes
+        #
+        # @param old_json [Object] The original JSON data
+        # @param new_json [Object] The new JSON data to compare against
+        # @return [Array<Hash>] Array of change objects with metadata
         def compare(old_json, new_json)
           changes = []
           compare_recursive(old_json, new_json, "", changes)

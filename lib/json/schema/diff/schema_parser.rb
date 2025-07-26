@@ -3,9 +3,19 @@
 module Json
   module Schema
     module Diff
+      # Parses and validates JSON Schema files, extracting field metadata for diff guidance
+      #
+      # This class handles loading JSON Schema files, validating their structure,
+      # and providing methods to extract field information and detect noisy fields.
       class SchemaParser
+        # @return [Hash] The parsed JSON Schema
         attr_reader :schema
 
+        # Initialize a new SchemaParser with a JSON Schema file
+        #
+        # @param schema_file [String] Path to the JSON Schema file
+        # @param validate_schema [Boolean] Whether to validate the schema structure (default: true)
+        # @raise [Error] If the schema file is invalid or not found
         def initialize(schema_file, validate_schema: true)
           @schema = JSON.parse(File.read(schema_file))
           
@@ -18,6 +28,14 @@ module Json
           raise Error, "Schema file not found: #{e.message}"
         end
 
+        # Validates JSON data against the schema
+        #
+        # Performs basic structural validation to ensure JSON data types match schema expectations
+        # and required fields are present.
+        #
+        # @param json_data [Object] The JSON data to validate
+        # @return [Boolean] True if validation passes
+        # @raise [Error] If validation fails
         def validate_json(json_data)
           # Simple structural validation - check if JSON structure roughly matches schema expectations
           begin
@@ -42,6 +60,10 @@ module Json
           end
         end
 
+        # Gets field information from the schema for a given path
+        #
+        # @param path [String] Dot-separated path to the field (e.g., "user.profile.name")
+        # @return [Hash] Field information including type, title, description, format, enum, and read_only
         def get_field_info(path)
           field_schema = traverse_schema(path.split('.'))
           return {} unless field_schema
@@ -56,6 +78,14 @@ module Json
           }
         end
 
+        # Determines if a field is considered "noisy" and should potentially be ignored
+        #
+        # Noisy fields are those that change frequently but aren't meaningful for comparison,
+        # such as timestamps, UUIDs, or fields marked as readOnly in the schema.
+        #
+        # @param path [String] Dot-separated path to the field
+        # @param value [Object] The field value
+        # @return [Boolean] True if the field is considered noisy
         def is_noisy_field?(path, value)
           field_info = get_field_info(path)
           format = field_info[:format]
@@ -77,6 +107,10 @@ module Json
 
         private
 
+        # Validates that the schema has basic JSON Schema structure
+        #
+        # @return [void]
+        # @raise [Error] If the schema is missing basic structure
         def validate_basic_schema_structure!
           # Basic structural validation for schema
           unless @schema.is_a?(Hash)
@@ -89,6 +123,10 @@ module Json
           end
         end
 
+        # Traverses the schema following a path to find field-specific schema information
+        #
+        # @param path_parts [Array<String>] Array of path components
+        # @return [Hash, nil] Schema for the field at the path, or nil if not found
         def traverse_schema(path_parts)
           current = @schema
           

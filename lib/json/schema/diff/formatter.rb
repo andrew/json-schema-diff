@@ -3,7 +3,12 @@
 module Json
   module Schema
     module Diff
+      # Formats diff results into human-readable or machine-readable output
+      #
+      # Supports both pretty-printed colorized output for humans and JSON output for machines.
+      # Handles ANSI color codes and provides structured formatting of change information.
       class Formatter
+        # ANSI color codes for terminal output
         COLORS = {
           red: "\e[31m",
           green: "\e[32m",
@@ -14,11 +19,19 @@ module Json
           reset: "\e[0m"
         }.freeze
 
+        # Initialize a new Formatter
+        #
+        # @param format [String] Output format - "pretty" or "json" (default: "pretty")
+        # @param use_color [Boolean] Whether to use ANSI color codes (default: true)
         def initialize(format = "pretty", use_color = true)
           @format = format
           @use_color = use_color
         end
 
+        # Formats an array of changes into the specified output format
+        #
+        # @param changes [Array<Hash>] Array of change objects from Comparer
+        # @return [String] Formatted output string
         def format(changes)
           case @format
           when "json"
