@@ -60,6 +60,19 @@ json-schema-diff --format json schema.json old.json new.json
 json-schema-diff --no-color schema.json old.json new.json
 ```
 
+### Validation Options
+
+```bash
+# Enable JSON validation against schema (helps catch data format errors)
+json-schema-diff --validate-json schema.json old.json new.json
+
+# Disable schema format validation (for malformed schemas)
+json-schema-diff --no-validate schema.json old.json new.json
+
+# Both validation options
+json-schema-diff --validate-json --validate schema.json old.json new.json
+```
+
 ### Ignoring Fields
 
 ```bash
@@ -83,6 +96,8 @@ Options:
   -f, --format FORMAT          Output format (pretty, json)
   -i, --ignore-fields FIELDS   Comma-separated list of field paths to ignore
       --[no-]color             Enable/disable colored output (default: enabled)
+      --[no-]validate          Enable/disable JSON Schema format validation (default: enabled)
+      --[no-]validate-json     Enable/disable JSON validation against schema (default: disabled)
   -h, --help                   Show help message
   -v, --version                Show version
 ```

@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2025-01-26
+
+### Added
+
+- JSON Schema validation capabilities with `json-schema` gem dependency
+- New CLI options for validation control:
+  - `--[no-]validate` for JSON Schema format validation (enabled by default)
+  - `--[no-]validate-json` for JSON content validation against schema (disabled by default)
+- Comprehensive error handling for invalid schemas and JSON validation failures
+- Schema structure validation with clear error messages for malformed schemas
+- Type checking validation ensuring JSON data types match schema expectations
+- Required field validation for object schemas
+- Fallback validation approach for complex schemas with external references
+
+### Changed
+
+- Updated `json-schema` dependency to version ~> 5.0 for improved performance and compatibility
+- Removed `bigdecimal` dependency (no longer needed with json-schema v5)
+- Enhanced error messages with specific validation failure details
+
 ## [0.1.0] - 2025-01-26
 
 ### Added

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require "json"
+require "json-schema"
 require "optparse"
 require_relative "diff/version"
 require_relative "diff/cli"

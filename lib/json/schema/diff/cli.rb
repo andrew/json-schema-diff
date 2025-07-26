@@ -20,11 +20,17 @@ module Json
           schema_file, old_file, new_file = args
 
           begin
-            schema = SchemaParser.new(schema_file)
+            schema = SchemaParser.new(schema_file, validate_schema: options[:validate])
             comparer = Comparer.new(schema, options[:ignore_fields] || [])
             
             old_json = JSON.parse(File.read(old_file))
             new_json = JSON.parse(File.read(new_file))
+            
+            # Validate JSON files against schema if requested
+            if options[:validate_json]
+              schema.validate_json(old_json)
+              schema.validate_json(new_json)
+            end
             
             diff_result = comparer.compare(old_json, new_json)
             
@@ -48,7 +54,9 @@ module Json
           options = {
             format: "pretty",
             color: true,
-            ignore_fields: []
+            ignore_fields: [],
+            validate: true,
+            validate_json: false
           }
 
           parser = OptionParser.new do |opts|
@@ -75,6 +83,14 @@ module Json
 
             opts.on("--[no-]color", "Enable/disable colored output (default: enabled)") do |color|
               options[:color] = color
+            end
+
+            opts.on("--[no-]validate", "Enable/disable JSON Schema format validation (default: enabled)") do |validate|
+              options[:validate] = validate
+            end
+
+            opts.on("--[no-]validate-json", "Enable/disable JSON validation against schema (default: disabled)") do |validate_json|
+              options[:validate_json] = validate_json
             end
 
             opts.on("-h", "--help", "Show this help message") do
