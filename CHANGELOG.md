@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.1] - 2025-01-26
+
+### Added
+
+- Comprehensive RDoc documentation for all classes and methods
+- API documentation with @param and @return annotations
+- Documentation URI in gemspec pointing to rubydoc.info
+- Documentation badge in README
+
 ## [0.2.0] - 2025-01-26
 
 ### Added
