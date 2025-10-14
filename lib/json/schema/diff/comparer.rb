@@ -11,10 +11,10 @@ module Json
         # Initialize a new Comparer
         #
         # @param schema_parser [SchemaParser] Parser for the JSON Schema
-        # @param ignore_fields [Array<String>] List of field paths to ignore during comparison
+        # @param ignore_fields [Array<String|Regexp>] List of field paths and patterns to ignore during comparison
         def initialize(schema_parser, ignore_fields = [])
           @schema_parser = schema_parser
-          @ignore_fields = ignore_fields.map(&:to_s)
+          @ignore_fields = ignore_fields
         end
 
         # Compares two JSON objects and returns a list of changes
@@ -30,9 +30,23 @@ module Json
 
         private
 
+        def ignored?(path)
+          @ignore_fields
+            .any? { |pattern| matching?(path, pattern) }
+        end
+
+        def matching?(path, pattern)
+          case pattern
+          when Regexp
+            pattern.match?(path)
+          else
+            path == pattern
+          end
+        end
+
         def compare_recursive(old_val, new_val, path, changes)
           # Skip ignored fields
-          return if @ignore_fields.include?(path)
+          return if ignored?(path)
 
           field_info = @schema_parser.get_field_info(path)
           
