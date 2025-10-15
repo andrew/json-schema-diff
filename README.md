@@ -159,6 +159,16 @@ formatter = Json::Schema::Diff::Formatter.new('pretty', true)
 puts formatter.format(changes)
 ```
 
+#### Ignoring fields using regular expression
+
+Fields can be ignored by using regular expressions:
+
+```ruby
+comparer = Json::Schema::Diff::Comparer.new(schema, [%r{List\[.*\]\.field}])
+```
+
+This can be helpful when the field to be ignored is embedded in a list.
+
 ## Schema Features
 
 ### Supported JSON Schema Properties

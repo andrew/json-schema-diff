@@ -234,6 +234,20 @@ class Json::Schema::TestDiff < Minitest::Test
     assert_equal "name", change[:path]
   end
 
+  def test_comparer_ignores_field_matched_by_regexp
+    schema = create_test_schema
+    comparer = Json::Schema::Diff::Comparer.new(schema, [Regexp.new(/People\[.*\]\.age/)])
+
+    old_json = { "People" => [{ "name" => "John", "age" => 30 }] }
+    new_json = { "People" => [{ "name" => "Jane", "age" => 25 }] }
+
+    changes = comparer.compare(old_json, new_json)
+
+    assert_equal 1, changes.length
+    change = changes.first
+    assert_equal "People[0].name", change[:path]
+  end
+
   def test_comparer_ignores_readonly_fields
     schema_content = {
       "type" => "object",
